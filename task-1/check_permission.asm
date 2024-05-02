@@ -26,24 +26,25 @@ check_permission:
     
     mov ecx, 24
 
+    mov dword [ebx], 1
+
 check_each_room:
-    test eax, 1  ;check if the current room is requested
+    test eax, ebx  ; check if the current room is requested
     jnz is_requested
     jmp isnt_requested
 
 is_requested:
-    test edx, 1
-    jnz doesnt_have_all_permissions
+    test edx, ebx  ; check if the ant has permission
+    jz doesnt_have_permission
 
 isnt_requested:
     shr eax, 1
     shr edx, 1
     loop check_each_room
 
-    mov dword [ebx], 1
     jmp end_function
 
-doesnt_have_all_permissions:
+doesnt_have_permission:
     mov dword [ebx], 0
 
 end_function:
