@@ -24,16 +24,20 @@ check_permission:
 
     shr eax, 8 ; remove the id
     
-    mov ecx, 23
+    mov ecx, 24
 
 check_each_room:
-    mov ebx, dword [eax]
-    and ebx, edx
-    and ebx, 1
+    test eax, 1
+    jnz has_permission
+    jmp doesnt_have_permission
+
+has_permission:
+    test edx, 1
+    jnz doesnt_have_all_permissions
+
+doesnt_have_permission:
     shr eax, 1
     shr edx, 1
-    cmp ebx, 0
-    je doesnt_have_all_permissions
     loop check_each_room
 
     mov dword [ebx], 1
