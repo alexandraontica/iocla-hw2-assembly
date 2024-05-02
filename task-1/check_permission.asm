@@ -19,22 +19,20 @@ check_permission:
    
     ;; Your code starts here
 
-    movzx ecx, al ; save the id and extend it to 4 bytes
+    mov ecx, eax
+    shr ecx, 24  ; save the id
     mov edx, dword [ant_permissions + ecx * 4]  ; save the permissions of the ant with the given id
-
-    shr eax, 8 ; remove the id
+    and eax, 0xFFFFFF ; remove the id
     
     mov ecx, 24
 
-    mov dword [ebx], 1
-
 check_each_room:
-    test eax, ebx  ; check if the current room is requested
+    test eax, 1  ; check if the current room is requested
     jnz is_requested
     jmp isnt_requested
 
 is_requested:
-    test edx, ebx  ; check if the ant has permission
+    test edx, 1  ; check if the ant has permission
     jz doesnt_have_permission
 
 isnt_requested:
@@ -42,6 +40,7 @@ isnt_requested:
     shr edx, 1
     loop check_each_room
 
+    mov dword [ebx], 1
     jmp end_function
 
 doesnt_have_permission:
