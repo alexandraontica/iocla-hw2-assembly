@@ -18,8 +18,8 @@ check_permission:
     ;; DO NOT MODIFY
    
     ;; Your code starts here
-
-    mov ecx, dword [ant_permissions]
+    mov edx, al ; save the id
+    mov ecx, dword [ant_permissions + edx * 4]  ; save the permissions of the ant with the given id
     shr ecx, 8  ; remove the id
 
     mov edx, 0xFFFFFF
