@@ -18,13 +18,23 @@ check_permission:
     ;; DO NOT MODIFY
    
     ;; Your code starts here
-    mov edx, al ; save the id
-    mov ecx, dword [ant_permissions + edx * 4]  ; save the permissions of the ant with the given id
-    shr ecx, 8  ; remove the id
 
-    mov edx, 0xFFFFFF
-    test edx, ecx
-    jz doesnt_have_all_permissions
+    movzx ecx, al ; save the id and extend it to 32 bits
+    mov edx, dword [ant_permissions + ecx * 4]  ; save the permissions of the ant with the given id
+
+    shr eax, 8 ; remove the id
+    
+    mov ecx, 23
+
+check_each_room:
+    mov ebx, dword [eax]
+    and ebx, edx
+    and ebx, 1
+    shr eax, 1
+    shr edx, 1
+    cmp ebx, 0
+    je doesnt_have_all_permissions
+    loop check_each_room
 
     mov dword [ebx], 1
     jmp end_function
