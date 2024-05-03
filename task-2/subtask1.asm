@@ -2,6 +2,17 @@
 
 ; declare your structs here
 
+struc creds
+    passkey: resw 1
+    username: resb 51
+endstruc
+
+struc request 
+    admin: resb 1
+    prio: resb 1
+    login_creds: resb 53  ; 2 bytes (short) + 51 bytes (string)
+endstruc
+
 section .text
     global sort_requests
     extern printf
@@ -16,6 +27,8 @@ sort_requests:
     ;; DO NOT MODIFY
 
     ;; Your code starts here
+
+    ; code
 
     ;; Your code ends here
 
