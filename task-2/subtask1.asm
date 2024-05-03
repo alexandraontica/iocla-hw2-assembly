@@ -28,7 +28,27 @@ sort_requests:
 
     ;; Your code starts here
 
-    ; code
+    	mov ecx, dword[num_rounds] ; load number of rounds
+
+ciphertext_loop:
+	movzx eax, byte [esi]       ; load t
+	mov ebx, eax                ; copy t
+
+	movzx eax, byte [edi]       ; load key[i % 8]
+	add ebx, eax                ; t = t + key[i % 8]
+
+	movzx eax, byte [ebx + sbox] ; load sbox[t]
+	mov edx, dword [esi + 1]    ; load text[(i + 1) % 8]
+	add eax, edx                ; t = sbox[t] + text[(i + 1) % 8]
+
+	rcl al, 1                   ; t = (t << 1) | (t >> 7)
+
+	mov [esi + 1], al           ; text[(i + 1) % 8] = t
+
+	inc esi                     ; move to next byte in text
+	inc edi                     ; move to next byte in key
+
+	loop ciphertext_loop
 
     ;; Your code ends here
 
