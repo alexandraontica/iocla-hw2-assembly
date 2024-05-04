@@ -1,3 +1,7 @@
+%include "../include/io.mac"
+
+; declare your structs here
+
 section .text
     global check_passkeys
     extern printf
@@ -14,73 +18,86 @@ check_passkeys:
 
     ;; Your code starts here
 
-    ; Initialize index variable i = 0
     mov esi, 0
+init:
+    cmp esi, ecx
+    jge end_init
 
-    ; Loop through requests array
-    .loop_requests:
-        ; Check if i < length
-        cmp esi, ecx
-        jge .end_loop_requests
+    mov byte [eax + esi], 0
 
-        ; Load passkey into AX from requests[i].login_creds.passkey
-        mov ax, word [ebx + esi * 8 + 4]
+    inc esi
+    jmp init
 
-        ; Check if passkey & 0x8001 == 0x8001
-        and ax, 8001h
-        cmp ax, 8001h
-        jne .next_iteration
+end_init:
+    mov esi, 0
+verif:
+    cmp esi, ecx
+    jge end_verif
 
-        ; Initialize num_even_bits = 0, num_odd_bits = 0
-        mov edx, 0
-        mov edi, 0
+    mov di, word [ebx + esi + 2] ; save the current passkey
+    shl esi, 16
+    
+    mov dx, 0x8001 ; first and last bit is set
+    and dx, di
+    cmp dx, 0x8001
+    jne end_if1
 
-        ; Calculate num_even_bits
-        mov cx, ax
-        shr cx, 1
-        and cx, 7Fh
-        mov ebx, 7
-        .calculate_even_bits:
-            test cx, 1
-            jz .even_bit_not_set
-            inc edx
-        .even_bit_not_set:
-            shr cx, 1
-            dec ebx
-            cmp ebx, 0
-            jg .calculate_even_bits
+    mov dx, di ; temp
+    shl edi, 16 ; I want the di register free, but i do not want to lose the data in it
+    mov di, 0
+    shr dx, 1
+    and dx, 0x7F
+    mov si, 0
+loop1:
+    cmp si, 7
+    jge end_loop1
 
-        ; Calculate num_odd_bits
-        mov cx, ax
-        shr cx, 8
-        and cx, 7Fh
-        mov ebx, 7
-        .calculate_odd_bits:
-            test cx, 1
-            jz .odd_bit_not_set
-            inc edi
-        .odd_bit_not_set:
-            shr cx, 1
-            dec ebx
-            cmp ebx, 0
-            jg .calculate_odd_bits
+    test dx, 1
+    jz isnt_set1
 
-        ; Check if num_even_bits is even and num_odd_bits is odd
-        test edx, 1
-        jnz .next_iteration
-        test edi, 1
-        jz .next_iteration
+    inc di
+isnt_set1:
+    shl di, 1
+    inc si
+    jmp loop1
 
-        ; Set connected[i] = 1
-        mov byte [eax + esi], 1
+end_loop1:
+    test di, 1
+    jnz end_if1
 
-    .next_iteration:
-        ; Increment index variable i
-        inc esi
-        jmp .loop_requests
+    shr edi, 16
+    mov dx, di ; temp
+    shl edi, 16 ; I want the di register free, but i do not want to lose the data in it
+    mov di, 0
+    shr dx, 8
+    and dx, 0x7F
+    mov si, 0
+loop2:
+    cmp si, 7
+    jge end_loop2
 
-    .end_loop_requests:
+    test dx, 1
+    jnz isnt_set2
 
+    inc di
+isnt_set2:
+    shl di, 1
+    inc si
+    jmp loop2
+end_loop2:
+    test di, 1
+    jz end_if1
+
+    mov edi, esi
+    shr edi, 16
+    mov byte [eax + edi], 1
+
+end_if1:
+    shr esi, 16
+    inc esi
+    jmp end_verif
+
+end_verif:
     ;; Your code ends here
 
     ;; DO NOT MODIFY
