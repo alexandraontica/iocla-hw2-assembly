@@ -30,16 +30,17 @@ init:
     imul ecx, ecx, 55 ; multiply the index by the size of the structure
     add edx, ecx ; edx points to the curent request
     add edx, 2 ; edx points to the passkey in the request
+    
     mov di, word [edx] ; save the passkey
  
-    mov dx, 0x8001 ; first and last bit are set
-    and dx, di
+    mov dx, di
+    and dx, 0x8001 ; first and last bit are set
     cmp dx, 0x8001
     jne end_if1
 
     mov dx, di ; temp
     shr dx, 1
-    and dx, 0x7F
+    and dx, 0x7F ; 0xF6 = 0b1111111
     xor ecx, ecx ; index
     xor ebx, ebx ; counter
 loop1:
@@ -51,7 +52,7 @@ loop1:
 
     inc ebx
 isnt_set1:
-    shl dx, 1
+    shr dx, 1
     inc ecx
     jmp loop1
 
@@ -73,7 +74,7 @@ loop2:
 
     inc ebx
 isnt_set2:
-    shl dx, 1
+    shr dx, 1
     inc ecx
     jmp loop2
 end_loop2:
@@ -88,7 +89,7 @@ end_if1:
     jmp init
 
 end_init:
-    xor esi, esi
+    ; xor esi, esi
 ; verif:  ;; asta nu face decat o iteratie, de ce nu stiu
 ;     cmp esi, [ebp + 12]
 ;     jge end_verif
