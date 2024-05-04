@@ -8,6 +8,58 @@ extern uint32_t num_rounds;
 extern void treyfer_crypt(uint8_t *text, uint8_t *key);
 extern void treyfer_dcrypt(uint8_t *text, uint8_t *key);
 
+// void treyfer_crypt(uint8_t *text, uint8_t *key){
+ 
+//     unsigned i;
+ 
+//     uint8_t t = text[0];
+ 
+ 
+//     for (i = 0; i < 8 * 10; i++) {
+ 
+//         t += key[i % 8];
+ 
+//         t = sbox[t] + text[(i + 1) % 8];
+ 
+//         t = (t << 1) | (t >> 7);        /* Rotate left 1 bit */
+ 
+//         text[(i + 1) % 8] = t;
+ 
+//     }
+ 
+// }
+ 
+// void treyfer_dcrypt(uint8_t *text, uint8_t *key){
+ 
+//     int i = 0;
+ 
+//     int j = 0;
+ 
+//     uint8_t top = 0;
+ 
+//     uint8_t bottom = 0;
+ 
+ 
+//     for (j = 0; j < 10; j++) {
+ 
+//         for (i = 7; i >= 0; i--) {
+ 
+//             top = text[i] + key[i];
+ 
+//             top = sbox[top];
+ 
+//             bottom = text[(i + 1) % 8];
+ 
+//             bottom = (bottom >> 1) | (bottom << 7);
+ 
+//             text[(i + 1) % 8] = bottom - top;
+ 
+//         }
+ 
+//     }
+ 
+// }
+
 size_t get_file_size(FILE *f) {
 	off_t cur = ftell(f);
 	fseek(f, 0, SEEK_END);

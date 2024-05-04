@@ -9,9 +9,63 @@ typedef struct position {
 } Position;
 
 
-void solve_labyrinth(unsigned int *out_line, unsigned int *out_col,
-                        unsigned int m, unsigned int n, char **labyrinth);
-
+void solve_labyrinth(unsigned int *out_line, unsigned int *out_col, unsigned int m, unsigned int n, char **labyrinth)
+ 
+{
+ 
+    (*out_line) = 0;
+ 
+    (*out_col) = 0;
+ 
+   do 
+ 
+    {
+ 
+        labyrinth[(*out_line)][(*out_col)] = '1';
+ 
+        if((*out_line) == m-1)
+ 
+        {
+ 
+            break;
+ 
+        }
+ 
+        if ((*out_line) < m - 1 && labyrinth[(*out_line) + 1][(*out_col)] == '0')
+ 
+        {
+ 
+            (*out_line)++;
+ 
+        }
+ 
+        else if ((*out_line) > 0 && labyrinth[(*out_line) - 1][(*out_col)] == '0')
+ 
+        {
+ 
+            (*out_line)--;
+ 
+        }
+ 
+        else if ((*out_col) < n - 1 && labyrinth[(*out_line)][(*out_col) + 1] == '0')
+ 
+        {
+ 
+            (*out_col)++;
+ 
+        }
+ 
+        else if ((*out_col) > 0 && labyrinth[(*out_line)][(*out_col) - 1] == '0')
+ 
+        {
+ 
+            (*out_col)--;
+ 
+        }
+ 
+    }while(labyrinth[(*out_line)][(*out_col)] == '0');
+ 
+}
 
 void read_test(unsigned int test_no, char ***a, 
                 unsigned int *m, unsigned int *n) {
