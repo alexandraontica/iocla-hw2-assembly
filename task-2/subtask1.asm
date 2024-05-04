@@ -1,26 +1,39 @@
-%include "../include/io.mac"
+; %include "../include/io.mac"
 
-; declare your structs here
+; ; declare your structs here
 
-section .text
-    global sort_requests
-    extern printf
+; ; struc creds
+; ;     passkey: resw 1
+; ;     username: resb 51
+; ; endstruc
 
-sort_requests:
-    ;; DO NOT MODIFY
-    enter 0,0
-    pusha
+; ; struc request 
+; ;     admin: resb 1
+; ;     prio: resb 1
+; ;     login_creds: resb 53  ; 2 bytes (short) + 51 bytes (string)
+; ; endstruc
 
-    mov ebx, [ebp + 8]      ; requests
-    mov ecx, [ebp + 12]     ; length
-    ;; DO NOT MODIFY
+; section .text
+;     global sort_requests
+;     extern printf
 
-    ;; Your code starts here
+; sort_requests:
+;     ;; DO NOT MODIFY
+;     enter 0,0
+;     pusha
 
-    ;; Your code ends here
+;     mov ebx, [ebp + 8]      ; requests
+;     mov ecx, [ebp + 12]     ; length
+;     ;; DO NOT MODIFY
 
-    ;; DO NOT MODIFY
-    popa
-    leave
-    ret
-    ;; DO NOT MODIFY
+;     ;; Your code starts here
+
+
+  
+;     ;; Your code ends here
+
+;     ;; DO NOT MODIFY
+;     popa
+;     leave
+;     ret
+;     ; DO NOT MODIFY

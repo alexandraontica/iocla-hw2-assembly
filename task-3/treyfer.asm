@@ -5,7 +5,7 @@ section .rodata
 	num_rounds dd 10
 
 section .bss
-	t resb 1
+	t resd 1
 
 section .data
 	top dd 0
@@ -28,8 +28,8 @@ treyfer_crypt:
 	;; FREESTYLE STARTS HERE
 
 	; t = text[0]
-	mov al, byte [esi]
-	mov byte [t], al
+	movzx eax, byte [esi]
+	mov [t], eax
 
 	mov ecx, 0  ; loop index
 encrypt_loop:
@@ -41,7 +41,7 @@ encrypt_loop:
 	
 	; t += key[idx % 8]
 	movzx eax, byte [edi + edx]
-	movzx ebx, byte [t]
+	mov ebx, [t]
 	add ebx, eax
 
 	movzx eax, byte [sbox + ebx]  ; sbox[t]
@@ -50,8 +50,9 @@ encrypt_loop:
 	inc edx
 	and edx, 7  ; % block_size
 
-	movzx ebx, byte [esi + edx]
-	add eax, ebx  ; t
+	movzx ebx, byte [esi + edx] ; text[(i + 1) % 8]
+	
+	add eax, ebx  ; t = sbox[t] + text[(i + 1) % 8]
 
 	rcl al, 1
 
@@ -80,9 +81,9 @@ treyfer_dcrypt:
 	mov ecx, num_rounds
 ecx_loop:
 	mov eax, 7
-i_loop:
+eax_loop:
 	cmp eax, 0
-	jl end_i_loop
+	jl end_eax_loop
 	; esi = text
 	; edi = key
 	movzx ebx, byte [esi + eax] 
@@ -107,8 +108,8 @@ i_loop:
 	mov byte [esi + ebx], dl
 
 	dec eax
-	jmp i_loop
-end_i_loop:
+	jmp eax_loop
+end_eax_loop:
 	loop ecx_loop
 
 	;; FREESTYLE ENDS HERE

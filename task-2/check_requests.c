@@ -16,8 +16,8 @@ struct request {
 int tests_num, types_num;
 float *type_score;
 
-// void sort_requests(struct request *requests, int len);
-// void check_passkeys(struct request *requests, int len, char *connected);
+void sort_requests(struct request *requests, int len);
+void check_passkeys(struct request *requests, int len, char *connected);
 
 void sort_requests(struct request *requests, int len) {
     int i, j;
@@ -60,45 +60,44 @@ void sort_requests(struct request *requests, int len) {
     }
 }
 
-void check_passkeys(struct request *requests, int len, char *connected) {
-    int i;
 
-    for (i = 0; i < len; i++) {
-        connected[i] = 0;
-    }
+// void check_passkeys(struct request *requests, int len, char *connected) {
+//     int i;
 
-    for (i = 0; i < len; i++) {
-        unsigned short pass = requests[i].login_creds.passkey;
+//     for (i = 0; i < len; i++) {
+//         connected[i] = 0;
+//     }
 
-        if ((pass & 0x8001) == 0x8001) {
-            int num_even_bits = 0, num_odd_bits = 0;
+//     for (i = 0; i < len; i++) {
+//         unsigned short pass = requests[i].login_creds.passkey;
 
-            unsigned short temp = pass;
-            temp >>= 1;
-            temp &= 0x7F;
-            for (int j = 0; j < 7; j++) {
-                if (temp & 1) {
-                    num_even_bits++;
-                }
-                temp >>= 1;
-            }
+//         if ((pass & 0x8001) == 0x8001) {
+//             int num_even_bits = 0, num_odd_bits = 0;
 
-            temp = pass;
-            temp >>= 8;
-            temp &= 0x7F;
-            for (int j = 0; j < 7; j++) {
-                if (temp & 1) {
-                    num_odd_bits++;
-                }
-                temp >>= 1;
-            }
+//             unsigned short temp = pass;
+//             temp >>= 1;
+//             for (int j = 0; j < 7; j++) {
+//                 if (temp & 1) {
+//                     num_even_bits++;
+//                 }
+//                 temp >>= 1;
+//             }
 
-            if (num_even_bits % 2 ==0 && num_odd_bits % 2 == 1) {
-                connected[i] = 1;
-            }
-        }
-    }
-}
+//             temp = pass;
+//             temp >>= 8;
+//             for (int j = 0; j < 7; j++) {
+//                 if (temp & 1) {
+//                     num_odd_bits++;
+//                 }
+//                 temp >>= 1;
+//             }
+
+//             if (num_even_bits % 2 ==0 && num_odd_bits % 2 == 1) {
+//                 connected[i] = 1;
+//             }
+//         }
+//     }
+// }
 
 void readConfig(char *filename)
 {
