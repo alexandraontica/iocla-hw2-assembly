@@ -1,77 +1,80 @@
-push    ebp
+sort_requests:
+        push    ebp
         mov     ebp, esp
         push    edi
         push    esi
         push    ebx
-        sub     esp, 92
+        sub     esp, 80
         mov     eax, DWORD PTR [ebp+12]
-        mov     edx, DWORD PTR [ebp+8]
-        imul    ecx, eax, 55
-        lea     ebx, [edx+55]
+        mov     ebx, DWORD PTR [ebp+8]
+        imul    edx, eax, 55
         dec     eax
-        mov     DWORD PTR [ebp-100], eax
-        add     edx, ecx
-        mov     DWORD PTR [ebp-96], edx
+        mov     DWORD PTR [ebp-80], ebx
+        mov     DWORD PTR [ebp-92], eax
+        add     edx, ebx
+        mov     DWORD PTR [ebp-88], edx
         xor     edx, edx
-        mov     DWORD PTR [ebp-92], edx
+        mov     DWORD PTR [ebp-84], edx
 .L2:
-        mov     esi, DWORD PTR [ebp-92]
-        cmp     DWORD PTR [ebp-100], esi
-        jle     .L12
-        inc     DWORD PTR [ebp-92]
-        mov     edx, ebx
+        mov     edx, DWORD PTR [ebp-84]
+        cmp     DWORD PTR [ebp-92], edx
+        jle     .L23
+        inc     DWORD PTR [ebp-84]
+        mov     edx, DWORD PTR [ebp-80]
+        add     DWORD PTR [ebp-80], 55
+        mov     eax, DWORD PTR [ebp-80]
 .L3:
-        mov     eax, DWORD PTR [ebp-96]
-        cmp     edx, eax
-        je      .L13
+        mov     ebx, DWORD PTR [ebp-88]
+        cmp     eax, ebx
+        je      .L2
+        mov     bl, BYTE PTR [eax]
         mov     cl, BYTE PTR [edx]
-        mov     al, BYTE PTR [ebx-55]
-        cmp     cl, 1
+        cmp     bl, 1
         jne     .L4
-        test    al, al
-        je      .L10
+        test    cl, cl
+        je      .L21
 .L4:
-        cmp     cl, al
+        cmp     bl, cl
         jne     .L5
-        mov     cl, BYTE PTR [ebx-54]
-        mov     al, BYTE PTR [edx+1]
-        cmp     al, cl
-        jb      .L10
-        cmp     cl, al
+        mov     bl, BYTE PTR [edx+1]
+        mov     cl, BYTE PTR [eax+1]
+        cmp     cl, bl
+        jb      .L21
+        cmp     bl, cl
         jne     .L5
-        push    eax
-        push    eax
-        lea     eax, [edx+4]
-        mov     DWORD PTR [ebp-104], edx
-        push    eax
-        lea     eax, [ebx-51]
-        push    eax
-        call    strcmp
-        add     esp, 16
-        mov     edx, DWORD PTR [ebp-104]
-        test    eax, eax
-        jle     .L5
-.L10:
-        lea     edi, [ebp-79]
-        lea     esi, [ebx-55]
-        mov     ecx, 55
-        rep movsb
-        lea     edi, [ebx-55]
+        xor     esi, esi
+.L7:
+        mov     cl, BYTE PTR [edx+4+esi]
+        mov     bl, BYTE PTR [eax+4+esi]
+        test    cl, cl
+        je      .L8
+        test    bl, bl
+        je      .L8
+        cmp     cl, bl
+        jne     .L8
+        inc     esi
+        jmp     .L7
+.L8:
+        cmp     bl, cl
+        jge     .L5
+.L21:
+        lea     edi, [ebp-67]
         mov     ecx, 55
         mov     esi, edx
         rep movsb
-        lea     esi, [ebp-79]
         mov     ecx, 55
         mov     edi, edx
+        mov     esi, eax
+        rep movsb
+        lea     esi, [ebp-67]
+        mov     ecx, 55
+        mov     edi, eax
         rep movsb
 .L5:
-        add     edx, 55
+        add     eax, 55
         jmp     .L3
-.L13:
-        add     ebx, 55
-        jmp     .L2
-.L12:
-        lea     esp, [ebp-12]
+.L23:
+        add     esp, 80
         pop     ebx
         pop     esi
         pop     edi
