@@ -35,7 +35,6 @@ verif:
     jge end_verif
 
     mov di, word [ebp + 8 + esi + 2] ; save the current passkey
-    ; shl esi, 16
     
     mov dx, 0x8001 ; first and last bit is set
     and dx, di
@@ -43,8 +42,6 @@ verif:
     jne end_if1
 
     mov dx, di ; temp
-    ;shl edi, 16 ; I want the di register free, but i do not want to lose the data in it
-    ;mov di, 0
     shr dx, 1
     and dx, 0x7F
     xor ecx, ecx
@@ -56,7 +53,7 @@ loop1:
     test dx, 1
     jz isnt_set1
 
-    inc ebx ; modificat
+    inc ebx
 isnt_set1:
     shl dx, 1
     inc ecx
@@ -66,10 +63,7 @@ end_loop1:
     test ebx, 1
     jnz end_if1
 
-    ;shr edi, 16
     mov dx, di ; temp
-    ;shl edi, 16 ; I want the di register free, but i do not want to lose the data in it
-    ;mov di, 0
     shr dx, 8
     and dx, 0x7F
     xor ecx, ecx
@@ -79,7 +73,7 @@ loop2:
     jge end_loop2
 
     test dx, 1
-    jnz isnt_set2
+    jz isnt_set2
 
     inc ebx
 isnt_set2:
@@ -90,12 +84,9 @@ end_loop2:
     test ebx, 1
     jz end_if1
 
-    ; mov edi, esi
-    ; shr edi, 16
     mov byte [eax + esi], 1
 
 end_if1:
-    ; shr esi, 16
     inc esi
     jmp end_verif
 
