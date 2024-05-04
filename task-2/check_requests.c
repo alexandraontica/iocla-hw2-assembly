@@ -34,10 +34,26 @@ void sort_requests(struct request *requests, int len) {
                     temp = requests[i];
                     requests[i] = requests[j];
                     requests[j] = temp;
-                } else if ((requests[i].prio == requests[j].prio) && strcmp(requests[i].login_creds.username, requests[j].login_creds.username) > 0) {
-                    temp = requests[i];
-                    requests[i] = requests[j];
-                    requests[j] = temp;
+                } else if (requests[i].prio == requests[j].prio) {
+                    int k = 0, rez;
+
+                    while (requests[i].login_creds.username[k] != '\0' && requests[j].login_creds.username[k] != '\0' && requests[i].login_creds.username[k] == requests[j].login_creds.username[k]) {
+                        k++;
+                    }
+
+                    if (requests[i].login_creds.username[k] < requests[j].login_creds.username[k]) {
+                        rez = -1;
+                    } else if (requests[i].login_creds.username[k] > requests[j].login_creds.username[k]) {
+                        rez = 1;
+                    } else {
+                        rez = 0;
+                    }
+
+                    if (rez > 0) {
+                        temp = requests[i];
+                        requests[i] = requests[j];
+                        requests[j] = temp;
+                    }
                 }
             }
         }
