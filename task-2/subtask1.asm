@@ -40,6 +40,7 @@ sort_loop1:
     imul ecx, ecx, 55 ; multiply the index by the size of the structure
     add edx, ecx ; edx points to the curent request
 
+    ; mov dword [edx], 2 ; debugging
     inc esi
     mov edi, esi
     dec esi
@@ -51,6 +52,8 @@ sort_loop2:
     mov ecx, edi ; the index of the element in the array
     imul ecx, ecx, 55 ; multiply the index by the size of the structure
     add ebx, ecx ; ebx points to the curent request
+
+    ; mov dword [ebx], edi ; debugging
 
     ; check the admin fields:
     mov cl, byte [ebx] ; admin from the second loop
@@ -87,8 +90,25 @@ admins_are_eq:
 
 prios_are_eq:
     ; check the usernames:
-    mov ecx, [ebx + 4] ; username from the second loop
-    mov eax, [edx + 4] ; username from the first loop
+    ; [ebx + 4] - username from the second loop
+    ; [edx + 4] - username from the first loop
+    xor ecx, ecx ; index to iterate through the username
+    mov eax, [edx + 4]
+check_usernames:
+    cmp ecx, 51
+    jge next_request ; if it reaches this point the usernames are equal
+
+    add eax, ecx
+    cmp al, byte [ebx + 4 + ecx]
+    jg swap
+
+    inc ecx 
+    jmp check_usernames
+
+swap:
+    mov eax, edx 
+    mov edx, ebx
+    mov ebx, eax
 
 next_request:
     inc edi 
