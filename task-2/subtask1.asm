@@ -13,6 +13,10 @@
 ;     login_creds: resb 53  ; 2 bytes (short) + 51 bytes (string)
 ; endstruc
 
+section .bss
+    idx1 resd 1
+    idx2 resd 1
+
 section .text
     global sort_requests
     extern printf
@@ -29,9 +33,11 @@ sort_requests:
     ;; Your code starts here
 
     xor esi, esi
+    mov [idx1], esi
 sort_loop1:
     mov ecx, [ebp + 12] 
     dec ecx 
+    mov esi, [idx1]
     cmp esi, ecx 
     jge end_sort_loop1
 
@@ -40,11 +46,13 @@ sort_loop1:
     imul ecx, ecx, 55 ; multiply the index by the size of the structure
     add edx, ecx ; edx points to the curent request
 
-    ; mov dword [edx], 2 ; debugging
+    ; mov byte [edx], 2 ; debugging
     inc esi
     mov edi, esi
+    mov [idx2], edi
     dec esi
 sort_loop2:
+    mov edi, [idx2]
     cmp edi, [ebp + 12] 
     jge end_sort_loop2
 
@@ -53,39 +61,25 @@ sort_loop2:
     imul ecx, ecx, 55 ; multiply the index by the size of the structure
     add ebx, ecx ; ebx points to the curent request
 
-    ; mov dword [ebx], edi ; debugging
+    ; mov byte [ebx + 1], 3 ; debugging
 
     ; check the admin fields:
-    mov cl, byte [ebx] ; admin from the second loop
-    mov al, byte [edx] ; admin from the first loop
-    and cl, 1
-    and al, 1
-    cmp al, cl 
+    movzx ecx, byte [ebx] ; admin from the second loop
+    movzx eax, byte [edx] ; admin from the first loop
+    and ecx, 1
+    and eax, 1
+    cmp ecx, eax
     je admins_are_eq
-    jg next_request
-
-    ; the request in ebx in made by an admin,
-    ; the one in edx is not
-    ; swap:
-
-    mov eax, edx 
-    mov edx, ebx
-    mov ebx, eax
+    jg swap
     jmp next_request
 
 admins_are_eq:
     ; check the prio fields:
-    mov cl, byte [ebx + 1] ; prio from the second loop
-    mov al, byte [edx + 1] ; prio from the first loop
-    cmp al, cl 
+    movzx ecx, byte [ebx + 1] ; prio from the second loop
+    movzx eax, byte [edx + 1] ; prio from the first loop
+    cmp eax, ecx
     je prios_are_eq
-    jl next_request
-
-    ; swap:
-
-    mov eax, edx 
-    mov edx, ebx
-    mov ebx, eax
+    jg swap
     jmp next_request
 
 prios_are_eq:
@@ -106,15 +100,44 @@ check_usernames:
     jmp check_usernames
 
 swap:
-    mov eax, edx 
-    mov edx, ebx
-    mov ebx, eax
+    xor esi, esi ; index to iterate through the username
+swap_usernames:
+    cmp esi, 51
+    jge swap_the_rest
+
+    mov al, byte [edx + 4 + esi] 
+    mov cl, byte [ebx + 4 + esi]
+    mov byte [edx + 4 + esi], cl 
+    mov byte [ebx + 4 + esi], al
+
+    inc esi
+    jmp swap_usernames
+
+swap_the_rest:
+    mov ax, word [edx + 2]
+    mov cx, word [ebx + 2]
+    mov word [edx + 2], cx
+    mov word [ebx + 2], ax
+
+    mov al, byte [edx + 1]
+    mov cl, byte [ebx + 1]
+    mov byte [edx + 1], cl
+    mov byte [ebx + 1], al
+
+    mov al, byte [edx]
+    mov cl, byte [ebx]
+    mov byte [edx], cl
+    mov byte [ebx], al
 
 next_request:
+    mov edi, [idx2]
     inc edi 
+    mov [idx2], edi
     jmp sort_loop2
 end_sort_loop2:
+    mov esi, [idx1]
     inc esi
+    mov [idx1], esi
     jmp sort_loop1
 end_sort_loop1:
   
