@@ -86,17 +86,23 @@ prios_are_eq:
     ; check the usernames:
     ; [ebx + 4] - username from the second loop
     ; [edx + 4] - username from the first loop
-    xor ecx, ecx ; index to iterate through the username
-    mov eax, [edx + 4]
+    xor esi, esi ; index to iterate through the username
 check_usernames:
-    cmp ecx, 51
-    jge next_request ; if it reaches this point the usernames are equal
+    cmp esi, 51
+    jge next_request
 
-    add eax, ecx
-    cmp al, byte [ebx + 4 + ecx]
+    ; mov byte [ebx + 4 + esi], 97
+    ; mov byte [edx + 4 + esi], 97
+
+    mov al, byte [edx + 4 + esi] 
+    mov cl, byte [ebx + 4 + esi]
+    cmp al, cl 
     jg swap
 
-    inc ecx 
+    ; mov byte [ebx + 4 + esi], 97
+    ; mov byte [edx + 4 + esi], 97
+
+    inc esi
     jmp check_usernames
 
 swap:
@@ -114,16 +120,19 @@ swap_usernames:
     jmp swap_usernames
 
 swap_the_rest:
+    ; passkeys
     mov ax, word [edx + 2]
     mov cx, word [ebx + 2]
     mov word [edx + 2], cx
     mov word [ebx + 2], ax
 
+    ; priorities:
     mov al, byte [edx + 1]
     mov cl, byte [ebx + 1]
     mov byte [edx + 1], cl
     mov byte [ebx + 1], al
 
+    ; admins:
     mov al, byte [edx]
     mov cl, byte [ebx]
     mov byte [edx], cl
