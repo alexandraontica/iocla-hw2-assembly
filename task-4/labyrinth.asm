@@ -37,7 +37,8 @@ solve_labyrinth:
 labyrinth_loop:
     ; set current element to '1'
     mov edi, dword [eax]
-    mov ecx, [esi + edi * 4] ; current row in matrix, *4 bc that is the size of a pointer
+    mov ecx, [esi + edi * 4] ; current row in matrix, 
+                             ; * 4 because that is the size of a pointer
     mov edi, dword [ebx]
     mov byte [ecx + edi], '1'
 
@@ -55,6 +56,7 @@ labyrinth_loop:
     jne next_if1
     
     inc dword [eax]
+    jmp cond
 
 next_if1:
     cmp dword [eax], 0
@@ -69,6 +71,7 @@ next_if1:
     jne next_if2
 
     dec dword [eax]
+    jmp cond
 
 next_if2:
     mov edx, [n]
@@ -84,6 +87,7 @@ next_if2:
     jne next_if3
 
     inc dword [ebx]
+    jmp cond
 
 next_if3:
     cmp dword [ebx], 0
