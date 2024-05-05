@@ -7,6 +7,7 @@ section .rodata
 section .data
 	top dd 0
 	bottom dd 0
+	idx1 dd 0
 
 section .text
 	global treyfer_crypt
@@ -26,9 +27,9 @@ treyfer_crypt:
 
 	movzx eax, byte [esi] ; t
 
-	xor edi, edi
 out_loop:
-	cmp edi, num_rounds
+	mov ecx, [idx1]
+	cmp ecx, num_rounds
 	jge end_out_loop
 
 	xor ecx, ecx  ; loop index
@@ -37,19 +38,16 @@ encrypt_loop:
 	jge end_loop_en
 
 
-	mov bl, byte [ebp + 12 + ecx]
+	mov bl, byte [edi + ecx]
 	add al, bl
 
 	mov bl, byte [sbox + eax]  ; sbox[t]
 
 	mov edx, ecx 
 	inc edx
-	cmp edx, 8
-	jne continue
-	xor edx, edx
+	and edx, 7
 
-continue:
-	mov al, byte [esi + edx] ; text[(i + 1) % 8]
+	mov al, byte [esi + edx] ; text[i + 1]
 	add al, bl  ; t = sbox[t] + text[(i + 1) % 8]
 	
 	rol al, 1
@@ -60,7 +58,9 @@ continue:
 	jmp encrypt_loop
 
 end_loop_en:
-	inc edi 
+	mov ecx, [idx1]
+	inc ecx 
+	mov [idx1], ecx
 	jmp out_loop
 
 end_out_loop:
