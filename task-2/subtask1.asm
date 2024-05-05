@@ -60,9 +60,9 @@ sort_loop2:
     mov al, byte [edx] ; admin from the first loop
     and cl, 1
     and al, 1
-    cmp cl, al 
+    cmp al, cl 
     je admins_are_eq
-    jl next_request
+    jg next_request
 
     ; the request in ebx in made by an admin,
     ; the one in edx is not
