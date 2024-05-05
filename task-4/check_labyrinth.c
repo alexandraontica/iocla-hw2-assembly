@@ -8,64 +8,30 @@ typedef struct position {
     unsigned int col;
 } Position;
 
+void solve_labyrinth(unsigned int *out_line, unsigned int *out_col, unsigned int m, unsigned int n, char **labyrinth);
 
-void solve_labyrinth(unsigned int *out_line, unsigned int *out_col, unsigned int m, unsigned int n, char **labyrinth)
+
+// void solve_labyrinth(unsigned int *out_line, unsigned int *out_col, unsigned int m, unsigned int n, char **labyrinth)
+// {
+//     (*out_line) = 0;
+//     (*out_col) = 0;
+//    do {
+//         labyrinth[(*out_line)][(*out_col)] = '1';
+//         if((*out_line) == m-1) {
+//             break;
+//         }
  
-{
- 
-    (*out_line) = 0;
- 
-    (*out_col) = 0;
- 
-   do 
- 
-    {
- 
-        labyrinth[(*out_line)][(*out_col)] = '1';
- 
-        if((*out_line) == m-1)
- 
-        {
- 
-            break;
- 
-        }
- 
-        if ((*out_line) < m - 1 && labyrinth[(*out_line) + 1][(*out_col)] == '0')
- 
-        {
- 
-            (*out_line)++;
- 
-        }
- 
-        else if ((*out_line) > 0 && labyrinth[(*out_line) - 1][(*out_col)] == '0')
- 
-        {
- 
-            (*out_line)--;
- 
-        }
- 
-        else if ((*out_col) < n - 1 && labyrinth[(*out_line)][(*out_col) + 1] == '0')
- 
-        {
- 
-            (*out_col)++;
- 
-        }
- 
-        else if ((*out_col) > 0 && labyrinth[(*out_line)][(*out_col) - 1] == '0')
- 
-        {
- 
-            (*out_col)--;
- 
-        }
- 
-    }while(labyrinth[(*out_line)][(*out_col)] == '0');
- 
-}
+//         if ((*out_line) < m - 1 && labyrinth[(*out_line) + 1][(*out_col)] == '0') {
+//             (*out_line)++;
+//         } else if ((*out_line) > 0 && labyrinth[(*out_line) - 1][(*out_col)] == '0') {
+//             (*out_line)--;
+//         } else if ((*out_col) < n - 1 && labyrinth[(*out_line)][(*out_col) + 1] == '0') {
+//             (*out_col)++;
+//         } else if ((*out_col) > 0 && labyrinth[(*out_line)][(*out_col) - 1] == '0') {
+//             (*out_col)--;
+//         }
+//     } while(labyrinth[(*out_line)][(*out_col)] == '0');
+// }
 
 void read_test(unsigned int test_no, char ***a, 
                 unsigned int *m, unsigned int *n) {
@@ -125,7 +91,7 @@ void check_result(int test_no, Position *sol, double *score) {
 
     sprintf(output_filename, "./output/labyrinth_%d.out", test_no);
     output_file = fopen(output_filename, "w");
-    fprintf(output_file, "%u %u\n", correct_solution.line, correct_solution.col);
+    fprintf(output_file, "%u %u\n", sol->line, sol->col);
     fclose(output_file);
 }
 

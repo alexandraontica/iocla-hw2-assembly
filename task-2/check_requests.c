@@ -19,46 +19,48 @@ float *type_score;
 void sort_requests(struct request *requests, int len);
 void check_passkeys(struct request *requests, int len, char *connected);
 
-void sort_requests(struct request *requests, int len) {
-    int i, j;
-    struct request temp;
+// void sort_requests(struct request *requests, int len) {
+//     int i, j;
+//     struct request temp;
 
-    for (i = 0; i < len - 1; i++) {
-        for (j = i + 1; j < len; j++) {
-            if (requests[j].admin == 1 && requests[i].admin == 0) {
-                temp = requests[i];
-                requests[i] = requests[j];
-                requests[j] = temp;
-            } else if (requests[j].admin == requests[i].admin) {
-                if (requests[i].prio > requests[j].prio) {
-                    temp = requests[i];
-                    requests[i] = requests[j];
-                    requests[j] = temp;
-                } else if (requests[i].prio == requests[j].prio) {
-                    int k = 0, rez;
+//     for (i = 0; i < len - 1; i++) {
+//         for (j = i + 1; j < len; j++) {
+//             if (requests[j].admin == 1 && requests[i].admin == 0) {
+//                 temp = requests[i];
+//                 requests[i] = requests[j];
+//                 requests[j] = temp;
+//             } else if (requests[j].admin == requests[i].admin) {
+//                 if (requests[i].prio > requests[j].prio) {
+//                     temp = requests[i];
+//                     requests[i] = requests[j];
+//                     requests[j] = temp;
+//                 } else if (requests[i].prio == requests[j].prio) {
+//                     int k = 0, rez;
 
-                    while (requests[i].login_creds.username[k] != '\0' && requests[j].login_creds.username[k] != '\0' && requests[i].login_creds.username[k] == requests[j].login_creds.username[k]) {
-                        k++;
-                    }
+//                     while (requests[i].login_creds.username[k] != '\0' &&
+//                            requests[j].login_creds.username[k] != '\0' && 
+//                            requests[i].login_creds.username[k] == requests[j].login_creds.username[k]) {
+//                         k++;
+//                     }
 
-                    if (requests[i].login_creds.username[k] < requests[j].login_creds.username[k]) {
-                        rez = -1;
-                    } else if (requests[i].login_creds.username[k] > requests[j].login_creds.username[k]) {
-                        rez = 1;
-                    } else {
-                        rez = 0;
-                    }
+//                     if (requests[i].login_creds.username[k] < requests[j].login_creds.username[k]) {
+//                         rez = -1;
+//                     } else if (requests[i].login_creds.username[k] > requests[j].login_creds.username[k]) {
+//                         rez = 1;
+//                     } else {
+//                         rez = 0;
+//                     }
 
-                    if (rez > 0) {
-                        temp = requests[i];
-                        requests[i] = requests[j];
-                        requests[j] = temp;
-                    }
-                }
-            }
-        }
-    }
-}
+//                     if (rez > 0) {
+//                         temp = requests[i];
+//                         requests[i] = requests[j];
+//                         requests[j] = temp;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
 
 // void check_passkeys(struct request *requests, int len, char *connected) {

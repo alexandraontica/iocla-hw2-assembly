@@ -105,7 +105,7 @@ next_if3:
 
 cond:
     mov edi, dword [eax]
-    mov ecx, [esi + edi * 4] ; current row in matrix, *4 bc that is the size of a pointer
+    mov ecx, [esi + edi * 4]
     mov edi, dword [ebx]
     cmp byte [ecx + edi], '0'
     jne end
