@@ -7,7 +7,7 @@ section .rodata
 section .data
 	top dd 0
 	bottom dd 0
-	idx1 dd 0
+	idx dd 0
 
 section .text
 	global treyfer_crypt
@@ -29,14 +29,15 @@ treyfer_crypt:
 
 	xor ecx, ecx  ; loop index
 encrypt_loop:
-	cmp ecx, 80 ; block_size
+	cmp ecx, 80 ; block_size * num_rounds
 	jge end_loop_en
 
 	mov edx, ecx 
-	and edx, 7
+	and edx, 7 ; % 8 = last three bits
+			   ; 7 = 0b111
 
 	mov bl, byte [edi + edx]
-	add al, bl
+	add al, bl ; t += key[idx % 8]
 
 	mov bl, byte [sbox + eax]  ; sbox[t]
 
@@ -44,12 +45,12 @@ encrypt_loop:
 	inc edx
 	and edx, 7
 
-	mov al, byte [esi + edx] ; text[i + 1]
-	add al, bl  ; t = sbox[t] + text[(i + 1) % 8]
+	mov al, byte [esi + edx] ;
+	add al, bl  ; t = sbox[t] + text[(idx + 1) % 8]
 	
-	rol al, 1
+	rol al, 1 ; rotate t to the left 
 
-	mov byte [esi + edx], al
+	mov byte [esi + edx], al ; text[(idx + 1) % 8] = t
 
 	inc ecx
 	jmp encrypt_loop
@@ -70,18 +71,25 @@ treyfer_dcrypt:
 	; DO NOT MODIFY
 	; FREESTYLE STARTS HERE
 	
-	
-	mov ecx, num_rounds
-ecx_loop:
-	mov eax, 7
+	mov esi, [ebp + 8] ; text
+	mov edi, [ebp + 12] ; key	
+
+	xor ecx, ecx
+; ecx_loop:
+; 	cmp ecx, num_rounds
+; 	jge end_ecx_loop
+
+	mov eax, 79
 eax_loop:
 	cmp eax, 0
 	jl end_eax_loop
-	; esi = text
-	; edi = key
-	movzx ebx, byte [esi + eax] 
-	movzx edx, byte [edi + eax]
-	add ebx, edx
+
+	mov ecx, eax 
+	and ecx, 7 ; % 8
+
+	movzx ebx, byte [esi + ecx] 
+	mov dl, byte [edi + ecx]
+	add bl, dl
 	movzx edx, byte [sbox + ebx] 
 	mov [top], edx
 
@@ -90,12 +98,8 @@ eax_loop:
 	and ebx, 7  ; % 8
 
 	movzx edx, byte [esi + ebx]
-	rcl dl, 1
+	ror dl, 1
 	mov [bottom], edx
-
-	mov ebx, eax
-	inc ebx
-	and ebx, 7  ; % 8
 
 	sub edx, [top] ; bottom - top
 	mov byte [esi + ebx], dl
@@ -103,7 +107,9 @@ eax_loop:
 	dec eax
 	jmp eax_loop
 end_eax_loop:
-	loop ecx_loop
+; 	inc ecx 
+; 	jmp ecx_loop
+; end_ecx_loop:
 
 	; FREESTYLE ENDS HERE
 	; DO NOT MODIFY
