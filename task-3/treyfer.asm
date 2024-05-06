@@ -27,18 +27,15 @@ treyfer_crypt:
 
 	movzx eax, byte [esi] ; t
 
-out_loop:
-	mov ecx, [idx1]
-	cmp ecx, num_rounds
-	jge end_out_loop
-
 	xor ecx, ecx  ; loop index
 encrypt_loop:
-	cmp ecx, 8 ; block_size
+	cmp ecx, 80 ; block_size
 	jge end_loop_en
 
+	mov edx, ecx 
+	and edx, 7
 
-	mov bl, byte [edi + ecx]
+	mov bl, byte [edi + edx]
 	add al, bl
 
 	mov bl, byte [sbox + eax]  ; sbox[t]
@@ -58,12 +55,6 @@ encrypt_loop:
 	jmp encrypt_loop
 
 end_loop_en:
-	mov ecx, [idx1]
-	inc ecx 
-	mov [idx1], ecx
-	jmp out_loop
-
-end_out_loop:
     ;; FREESTYLE ENDS HERE
 	;; DO NOT MODIFY
 	popa
